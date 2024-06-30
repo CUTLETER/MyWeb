@@ -145,10 +145,9 @@ public class UserDAO {
 		return dto;
 	}
 	
-	
-	// 회원 정보 메소드
 	public UserDTO getInfo (String id) {
-		UserDTO info = null;
+		UserDTO dto = null;
+		
 		String sql = "SELECT * FROM USERS WHERE ID = ?";
 		
 		Connection conn = null;
@@ -162,21 +161,22 @@ public class UserDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-			String pw = rs.getString("pw");
-			String name = rs.getString("name");
-			String email = rs.getString("email");
-			String gender = rs.getString("gender");
-			
-			info  = new UserDTO(null,pw, name, email, gender, null);
+				String pw = rs.getString("pw");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+				String gender = rs.getString("gender");
+				
+				dto = new UserDTO(id, pw, name, email, gender, null);
 			}
 			
+			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		} finally {
 			JdbcUtil.close(conn, pstmt, rs);
 		}
 		
-		return info;
+		return dto;
 	}
 
 }

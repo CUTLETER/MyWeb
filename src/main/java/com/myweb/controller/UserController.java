@@ -66,12 +66,11 @@ public class UserController extends HttpServlet {
 		} else if(command.equals("/user/modify.user")) { // 정보 수정 페이지
 			service = new UserServiceImpl();
 			service.getInfo(request, response);
-		} else if (command.equals("/user/logout.user")) {
+		} else if(command.equals("/user/logout.user")) {
 			HttpSession session = request.getSession();
 			session.invalidate();
-			
 			response.sendRedirect(request.getContextPath()+"/index.jsp"); // 메인 화면으로
-		}
+		} 
 		
 	}
 }

@@ -27,29 +27,29 @@
 		
 		<hr/>
 		
-		<form action="####" method="post">
+		<form action="modifyForm.user" method="post">
 			<table>
 				<tr>							
 					<td>아이디</td>										<!-- 아이디 못 바꾸게 설정함 -->
-					<td> <input type="text" name="id" placeholder="4글자 이상" readonly="readonly"> </td>
+					<td> <input type="text" name="id" value=${dto.id } readonly="readonly"> </td>
 				</tr>
 				<tr>
 					<td>비밀번호</td>
-					<td><input type="password" name="pw" placeholder="4자 이상" required="required" pattern="[0-9A-Za-z]{4,}"></td>
+					<td><input type="password" name="pw" required="required" pattern="[0-9A-Za-z]{4,}"></td>
 				</tr>
 				<tr>
 					<td>이름</td>
-					<td><input type="text" name="name" placeholder="이름" required="required"></td>
+					<td><input type="text" name="name" value=${dto.name } required="required"></td>
 				</tr>
 				<tr>
 					<td>이메일</td>
-					<td><input type="email" name="email"></td>
+					<td><input type="email" name="email" value=${dto.email }></td>
 				</tr>
 				<tr>
 					<td>성별</td>
 					<td>										<!-- checked 해당 값에 미리 체크되어 있음 -->
-						<input type="radio" name="gender" value="M" checked="checked">남성
-						<input type="radio" name="gender" value="W">여성
+						<input type="radio" name="gender" value="M" ${dto.gender == 'M' ? checked : ''}>남성
+						<input type="radio" name="gender" value="W" ${dto.gender == 'W' ? checked : ''}>여성
 					</td>
 				</tr>
 			</table>

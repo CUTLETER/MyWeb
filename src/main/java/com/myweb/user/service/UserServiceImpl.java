@@ -64,15 +64,10 @@ public class UserServiceImpl implements UserService {
 			
 			response.sendRedirect("mypage.user"); // 다시 컨트롤러 태워서 나감
 		}
-	}
 
 
 
 
-	@Override
-	public void getInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		HttpSession session = request.getSession();
 
 		// 아이디 기반으로 회원 정보를 조회해서 데이터를 가지고 수정 페이지로 이동시키기
 		//1. 아이디는 세션이 있음
@@ -80,6 +75,27 @@ public class UserServiceImpl implements UserService {
 		//3. 서비스에서는 getInfo() 호출하고, 조회한 데이터를 request에 저장함
 		//4. forward를 이용해서 modify.jsp로 이동함
 		//5. 회원 정보를 input 태그에 미리 출력함
+	}
+
+
+
+
+	@Override
+	public void getInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		String id = (String)session.getAttribute("user_id");
+		
+		UserDAO dao = UserDAO.getInstance();
+		UserDTO dto = dao.getInfo(id);
+		
+		if (dto != null) {
+			request.setAttribute("dto", dto);
+			request.getRequestDispatcher("modify.jsp").forward(request, response);
+		} else {
+			request.setAttribute("msg", "회원 정보를 가져오는 데 실패했습니다.");
+			response.sendRedirect("mypage.user");
+		}
+		
 	}
 
 }
