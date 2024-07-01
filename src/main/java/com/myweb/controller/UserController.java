@@ -63,14 +63,23 @@ public class UserController extends HttpServlet {
 			service.login(request, response);
 		} else if(command.equals("/user/mypage.user")) { // 회원 페이지
 			request.getRequestDispatcher("mypage.jsp").forward(request, response);
-		} else if(command.equals("/user/modify.user")) { // 정보 수정 페이지
+		} else if(command.equals("/user/modify.user")) { // 정보 페이지
 			service = new UserServiceImpl();
 			service.getInfo(request, response);
 		} else if(command.equals("/user/logout.user")) {
 			HttpSession session = request.getSession();
 			session.invalidate();
 			response.sendRedirect(request.getContextPath()+"/index.jsp"); // 메인 화면으로
-		} 
+		} else if(command.equals("/user/update.user")) { // 정보 수정 페이지
+			service = new UserServiceImpl();
+			service.update(request, response);
+		} else if(command.equals("/user/delete.user")) { // 삭제 페이지
+			//mvc2는 기본 이동이 forward
+			request.getRequestDispatcher("delete.jsp").forward(request, response);
+		} else if(command.equals("/user/deleteForm.user")) { // 탈퇴 요청 페이지
+			service = new UserServiceImpl();
+			service.delete(request, response);
+		}
 		
 	}
 }

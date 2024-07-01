@@ -110,6 +110,7 @@ public class UserDAO {
 
 	// 로그인 메소드
 	public UserDTO login (String id, String pw) {
+
 		
 		UserDTO dto = null;
 		
@@ -145,6 +146,7 @@ public class UserDAO {
 		return dto;
 	}
 	
+	// 정보 조회 메소드
 	public UserDTO getInfo (String id) {
 		UserDTO dto = null;
 		
@@ -157,9 +159,10 @@ public class UserDAO {
 		try {
 			conn = ds.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, id);
-			rs = pstmt.executeQuery();
+			pstmt.setString(1, id); // select문의 첫번째 물음표 값에 id 대입
+			rs = pstmt.executeQuery(); // SELECT한 값을 resultset 객체 타입에 저장시킴
 			
+			// resultset에 저장된 값을 자바 변수에다 저장시킴
 			if(rs.next()) {
 				String pw = rs.getString("pw");
 				String name = rs.getString("name");
@@ -167,6 +170,15 @@ public class UserDAO {
 				String gender = rs.getString("gender");
 				
 				dto = new UserDTO(id, pw, name, email, gender, null);
+				
+//				UserDTO dto = new UserDTO();
+//				dto.setId(id);
+//				dto.setPw(pw);
+//				dto.setName(name);
+//				dto.setEmail(email);
+//				dto.setGender(gender);
+				
+				
 			}
 			
 			
@@ -179,5 +191,92 @@ public class UserDAO {
 		return dto;
 	}
 
+	
+	// 정보 수정 메소드  - 성공 시 1 반환 , 실패 시 0 반환
+	public int update(UserDTO dto) { // 매개변수 dto
+		int result = 0; // 실패 시 0 대입
+		
+		String sql = "UPDATE USERS SET PW = ?, NAME = ?, EMAIL = ?, GENDER = ? WHERE ID = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = ds.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getPw());
+			pstmt.setString(2, dto.getName());
+			pstmt.setString(3, dto.getEmail());
+			pstmt.setString(4, dto.getGender());
+			pstmt.setString(5, dto.getId()); // sql문의 물음표 값 순서대로
+			
+			result = pstmt.executeUpdate(); // insert, update, delete 한정
+//			pstmt.executeUpdate()는 성공하면 정수로 행의 개수 반환, 실패하면 0 반환	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn, pstmt, null);
+		}
+		
+		return result;
+	}
+	
+	
+	/*
+	 * public UserDTO delete (String id, String pw) { // 로그인 메소드와 일부 중복됨 -> 좋지 못함 (DAO는 재활용이 장점)
+	 * 
+	 * UserDTO dto = null;
+	 * 
+	 * String sql1 = "SELECT * FROM USERS WHERE ID = ? AND PW = ?"; String sql2 =
+	 * "DELETE FROM USERS WHERE ID = ? AND PW = ?";
+	 * 
+	 * Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null;
+	 * 
+	 * try { conn = ds.getConnection(); pstmt = conn.prepareStatement(sql1);
+	 * pstmt.setString(1, id); pstmt.setString(2, pw); rs = pstmt.executeQuery();
+	 * 
+	 * if (rs.next()) { String name = rs.getString("name"); String email =
+	 * rs.getString("email"); String gender = rs.getString("gender");
+	 * 
+	 * dto = new UserDTO(id, pw, name, email, gender, null); }
+	 * 
+	 * if (dto != null) { pstmt = conn.prepareStatement(sql2);
+	 * 
+	 * pstmt.setString(1, id); pstmt.setString(2, pw);
+	 * 
+	 * pstmt.executeUpdate();
+	 * 
+	 * }
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); } finally { JdbcUtil.close(conn,
+	 * pstmt, rs); }
+	 * 
+	 * 
+	 * return dto; }
+	 */
+	
+	public void delete (String id) { // 로그인 메소드와 중복되는 부분 XXXXX
+		String sql = "DELETE FROM USERS WHERE ID = ? AND PW = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = ds.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+	
+			pstmt.executeUpdate();
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JdbcUtil.close(conn, pstmt, null);
+		}
+		
+	}
+	
 }
 

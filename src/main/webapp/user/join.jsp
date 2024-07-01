@@ -48,7 +48,7 @@
 					<td>성별</td>
 					<td>										<!-- checked 해당 값에 미리 체크되어 있음 -->
 						<input type="radio" name="gender" value="M" checked="checked">남성
-						<input type="radio" name="gender" value="W">여성
+						<input type="radio" name="gender" value="F">여성
 					</td>
 				</tr>
 			</table>

@@ -98,4 +98,86 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+
+
+
+	@Override
+	public void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 클라이언트의 값을 받기
+		String id = request.getParameter("id");
+		String pw = request.getParameter("pw");
+		String name = request.getParameter("name");
+		String email = request.getParameter("email");
+		String gender = request.getParameter("gender");
+		
+		// update 메소드의 매개변수가 dto 타입이라 먼저 파라미터를 dto에 저장시키기
+		UserDTO dto = new UserDTO(id, pw, name, email, gender, null);
+		
+		// dao 생성
+		UserDAO dao = UserDAO.getInstance();
+		int result = dao.update(dto); // update 메소드의 반환은 정수형이라
+		
+		if(result == 1) { // 업데이트 성공
+			
+			// 세션의 name을 수정하기 (수정 직후의 닉네임으로 XX님의 회원 정보를 관리합니다에 바로 반영하기
+			HttpSession session = request.getSession();
+			session.setAttribute("user_name", name);
+			
+			
+			// 알림창을 java에서 화면에 보내는 방법
+			// out 객체 : 클라이언트로 출력
+			response.setContentType("text/html; charset=UTF-8"); // 문서에 대한 타입, jsp 파일 맨위에 적혀 있음
+			PrintWriter out = response.getWriter(); // printwriter에 담아내면 콘솔 말고 화면(웹 브라우저)에 출력해줌
+			out.println("<script>");
+			out.println("alert('회원 정보가 수정되었습니다.');"); // 경고창 띄우기
+			out.println("location.href='mypage.user';"); // 경고창 타고 갈 이동경로
+			out.println("</script>");
+			
+			
+		} else { // 업데이트 실패
+			response.sendRedirect("mypage.user"); // 보내줄 데이터가 없어서 redirect로! mvc2에선 컨트롤러의 경로를 적음
+		}
+		
+		
+	}
+
+
+
+
+	@Override
+	public void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/*
+		 * 화면에서 넘어오는 pw 값을 받기, (id는 세션에 있음)
+		 * 탈퇴는 비밀번호가 일치하는지 확인하고 진행하기
+		 * 로그인 메소드 재활용하기
+		 * 로그인 메소드가 DTO를 반환하면 DAO에 delete() 메소드 만들고 회원 삭제를 진행하기
+		 * 탈퇴 성공 시엔 세션을 전부 삭제하고 "홈화면"으로 redirect 시키기 
+		 * 비밀번호가 틀렸을 땐 delete.jsp에 "비밀번호를 확인하세요." 메세지 띄우기
+		 */
+		
+		HttpSession session = request.getSession();
+		String id = (String)session.getAttribute("user_id");
+		
+		String pw = request.getParameter("pw");
+		
+		UserDAO dao = UserDAO.getInstance();
+//		UserDTO dto = dao.delete(id, pw); 이건 DAO에서 로그인 메소드와 중복되는 메소드 쓸 때
+		UserDTO dto = dao.login(id, pw);
+		
+		if (dto != null) {
+			dao.delete(id);
+			session.invalidate();
+			response.sendRedirect("../index.jsp");
+		} else {
+			response.setContentType("text/html; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println("<script>");
+			out.println("alert('비밀번호를 확인하세요.');");
+			out.println("location.href='delete.jsp';");
+			out.println("</script>");
+			
+		}
+		
+	}
+
 }

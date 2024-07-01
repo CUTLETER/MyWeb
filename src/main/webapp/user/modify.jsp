@@ -27,7 +27,7 @@
 		
 		<hr/>
 		
-		<form action="modifyForm.user" method="post">
+		<form action="update.user" method="post">
 			<table>
 				<tr>							
 					<td>아이디</td>										<!-- 아이디 못 바꾸게 설정함 -->
@@ -47,9 +47,9 @@
 				</tr>
 				<tr>
 					<td>성별</td>
-					<td>										<!-- checked 해당 값에 미리 체크되어 있음 -->
-						<input type="radio" name="gender" value="M" ${dto.gender == 'M' ? checked : ''}>남성
-						<input type="radio" name="gender" value="W" ${dto.gender == 'W' ? checked : ''}>여성
+					<td>										
+						<input type="radio" name="gender" value="M" ${dto.gender == 'M' ? 'checked' : ''}>남성
+						<input type="radio" name="gender" value="F" ${dto.gender == 'W' ? 'checked' : ''}>여성
 					</td>
 				</tr>
 			</table>
